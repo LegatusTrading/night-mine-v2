@@ -198,10 +198,19 @@ This tells you which account numbers in Eternl wallet contain NIGHT rewards.
 - All operation scripts use `exec_cmd()` for portability
 
 ### Dependencies
-- Python 3.8+
+- **Python 3.10-3.13** (IMPORTANT: Python 3.14+ is NOT compatible with the pre-built ashmaize_py.so native library)
 - Python packages: pycardano, wasmtime, requests, cbor2, portalocker, mnemonic
 - Cardano tools: cardano-address, cardano-cli (auto-downloaded to `tools/`)
 - Native Rust library: ashmaize_py (loaded via ashmaize_loader)
+
+**Python Version Issue:**
+If you see segmentation faults when running `./mine start`, you're likely using Python 3.14+. Recreate the venv with Python 3.13:
+```bash
+rm -rf .venv
+/opt/homebrew/bin/python3.13 -m venv .venv  # or python3.12
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 ### File Locations
 - **Generated during mining**: `.venv/`, `hd-wallets/`, `wallets.json`, `challenges.json`, `balances.json`, `miner.log`, `.miner.pid`

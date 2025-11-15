@@ -19,7 +19,7 @@ else
     if [ "$HOST" = "local" ]; then
         # Local: kill by PID
         if [ -f "$SCRIPT_DIR/.miner.pid" ]; then
-            local pid=$(cat "$SCRIPT_DIR/.miner.pid")
+            pid=$(cat "$SCRIPT_DIR/.miner.pid")
             if kill -0 "$pid" 2>/dev/null; then
                 kill "$pid"
                 sleep 2

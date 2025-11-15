@@ -94,8 +94,13 @@ def sign_wallet_terms(wallet_data):
         # Store the signature
         wallet_data['signature'] = signature_hex
 
+        # Extract the 32-byte signing key from extended key (needed by miner.py)
+        # Extended key format: [64-byte key + 32-byte chain code]
+        # We need first 32 bytes of the 64-byte key (the actual signing key)
+        signing_key_primitive = extended_signing_key.to_primitive()[:32]
+        wallet_data['signing_key'] = signing_key_primitive.hex()
+
         # Remove the extended_signing_key object before saving (can't serialize it)
-        # We'll need to store it differently for the miner
         del wallet_data['extended_signing_key']
 
         return True

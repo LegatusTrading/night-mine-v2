@@ -83,17 +83,31 @@ info "Recent solutions (last 5):"
 
 if [ "$HOST" = "local" ]; then
     if [ -f "$SCRIPT_DIR/miner.log" ]; then
-        grep "Solution accepted" "$SCRIPT_DIR/miner.log" | tail -n 5 || echo "No solutions found"
+        recent_solutions=$(grep "Solution accepted" "$SCRIPT_DIR/miner.log" 2>/dev/null | tail -n 5)
+        if [ -n "$recent_solutions" ]; then
+            echo "$recent_solutions"
+        else
+            echo "  No solutions found yet"
+        fi
     else
-        echo "No log file"
+        echo "  No log file"
     fi
 else
-    exec_cmd "journalctl -u midnight-miner --no-pager | grep 'Solution accepted' | tail -n 5 || echo 'No solutions found'"
+    recent_solutions=$(exec_cmd "journalctl -u midnight-miner --no-pager 2>/dev/null | grep 'Solution accepted' | tail -n 5")
+    if [ -n "$recent_solutions" ]; then
+        echo "$recent_solutions"
+    else
+        echo "  No solutions found yet"
+    fi
 fi
 
 # Show uptime if running
 echo ""
 if is_running; then
-    info "Recent activity:"
-    get_logs 5
+    info "Mining activity (last 5 workers):"
+    # Get logs, strip ALL ANSI codes and dashboard spam, show worker status
+    get_logs 30 | \
+        sed 's/\x1b\[[0-9;]*m//g' | \
+        grep -E "^[0-9]+\s+addr1" | \
+        tail -5 || echo "  Mining in progress..."
 fi

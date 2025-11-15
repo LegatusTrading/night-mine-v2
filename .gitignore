@@ -47,6 +47,12 @@ tools/*.tar.gz
 cardano-address
 cardano-cli
 
+# Ashmaize binaries (large Rust libraries - copied from midnight-miner)
+lib/macos-*/
+lib/linux-*/
+lib/windows-*/
+ashmaize_loader.py
+
 # Editor files
 .vscode/
 .idea/

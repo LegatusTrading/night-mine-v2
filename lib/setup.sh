@@ -38,7 +38,27 @@ exec_cmd "uname -s -m"
 info "Installing Python dependencies..."
 exec_cmd "
     if [ ! -d .venv ]; then
-        python3 -m venv .venv
+        # Prefer Python 3.13 or 3.12 (3.14+ incompatible with ashmaize_py.so)
+        PYTHON_CMD=python3
+        for py in python3.13 python3.12 python3.11 python3.10; do
+            if command -v \$py >/dev/null 2>&1; then
+                PYTHON_CMD=\$py
+                echo \"Using \$py (\$(\$py --version))\"
+                break
+            fi
+        done
+
+        # Check if default python3 is too new (3.14+)
+        if [ \"\$PYTHON_CMD\" = \"python3\" ]; then
+            PY_VERSION=\$(python3 -c 'import sys; print(f\"{sys.version_info.major}.{sys.version_info.minor}\")')
+            if [ \"\$PY_VERSION\" = \"3.14\" ] || [ \"\$PY_VERSION\" = \"3.15\" ]; then
+                echo \"WARNING: Python 3.14+ detected. This is incompatible with ashmaize_py.so\"
+                echo \"Please install Python 3.13 or 3.12 and try again.\"
+                exit 1
+            fi
+        fi
+
+        \$PYTHON_CMD -m venv .venv
     fi
     .venv/bin/pip install --upgrade pip
     .venv/bin/pip install -r requirements.txt

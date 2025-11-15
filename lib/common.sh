@@ -204,11 +204,12 @@ get_logs() {
 count_solutions() {
     if [ "$HOST" = "local" ]; then
         if [ -f "$SCRIPT_DIR/miner.log" ]; then
-            grep -c "Solution accepted" "$SCRIPT_DIR/miner.log" 2>/dev/null || echo "0"
+            local count=$(grep "Solution accepted" "$SCRIPT_DIR/miner.log" 2>/dev/null | wc -l | tr -d ' ')
+            echo "$count"
         else
             echo "0"
         fi
     else
-        exec_cmd "journalctl -u midnight-miner --no-pager | grep -c 'Solution accepted' || echo 0"
+        exec_cmd "journalctl -u midnight-miner --no-pager 2>/dev/null | grep 'Solution accepted' | wc -l | tr -d ' ' || echo 0"
     fi
 }
