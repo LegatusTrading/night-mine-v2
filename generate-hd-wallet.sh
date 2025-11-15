@@ -28,8 +28,8 @@ set -euo pipefail
 #==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CARDANO_ADDRESS="${SCRIPT_DIR}/cardano-address"
-CARDANO_CLI="${SCRIPT_DIR}/cardano-cli"
+CARDANO_ADDRESS="${SCRIPT_DIR}/lib/cardano-address"
+CARDANO_CLI="${SCRIPT_DIR}/lib/cardano-cli"
 
 # Default settings
 DEFAULT_NETWORK="testnet"

@@ -67,29 +67,64 @@ exec_cmd "
 # Download Cardano tools if needed
 info "Checking Cardano tools..."
 exec_cmd "
-    if [ ! -f tools/cardano-address ]; then
+    if [ ! -f lib/cardano-address ] || [ ! -f lib/cardano-cli ]; then
         echo 'Downloading Cardano tools...'
-        mkdir -p tools
+        mkdir -p lib
 
-        # Detect OS for tool download
+        # Detect OS and architecture
         OS=\$(uname -s | tr '[:upper:]' '[:lower:]')
         ARCH=\$(uname -m)
 
-        if [ \"\$OS\" = \"darwin\" ]; then
-            PLATFORM=\"macos\"
-        elif [ \"\$OS\" = \"linux\" ]; then
-            PLATFORM=\"linux\"
-        else
-            echo \"Unsupported OS: \$OS\"
-            exit 1
+        # Normalize architecture
+        if [ \"\$ARCH\" = \"arm64\" ] || [ \"\$ARCH\" = \"aarch64\" ]; then
+            ARCH=\"arm64\"
+        elif [ \"\$ARCH\" = \"x86_64\" ] || [ \"\$ARCH\" = \"amd64\" ]; then
+            ARCH=\"x64\"
         fi
 
-        # Download cardano-address (example - adjust URLs as needed)
-        # This is a placeholder - you'll need actual download URLs
-        echo 'Note: Please manually download cardano-address and cardano-cli to tools/ directory'
-        echo 'Or install via package manager'
+        # Download cardano-address
+        if [ ! -f lib/cardano-address ]; then
+            echo 'Downloading cardano-address...'
+            CARDANO_ADDR_VERSION=\"4.0.1\"
+
+            if [ \"\$OS\" = \"darwin\" ]; then
+                CARDANO_ADDR_URL=\"https://github.com/IntersectMBO/cardano-addresses/releases/download/\${CARDANO_ADDR_VERSION}/cardano-addresses-\${CARDANO_ADDR_VERSION}-darwin.tar.gz\"
+            elif [ \"\$OS\" = \"linux\" ]; then
+                CARDANO_ADDR_URL=\"https://github.com/IntersectMBO/cardano-addresses/releases/download/\${CARDANO_ADDR_VERSION}/cardano-addresses-\${CARDANO_ADDR_VERSION}-linux.tar.gz\"
+            else
+                echo \"Unsupported OS: \$OS\"
+                exit 1
+            fi
+
+            curl -L -o /tmp/cardano-address.tar.gz \"\$CARDANO_ADDR_URL\"
+            tar -xzf /tmp/cardano-address.tar.gz -C lib/ bin/cardano-address --strip-components=1
+            chmod +x lib/cardano-address
+            rm /tmp/cardano-address.tar.gz
+            echo '✓ cardano-address downloaded'
+        fi
+
+        # Download cardano-cli
+        if [ ! -f lib/cardano-cli ]; then
+            echo 'Downloading cardano-cli...'
+            CARDANO_CLI_VERSION=\"10.1.3.0\"
+
+            if [ \"\$OS\" = \"darwin\" ]; then
+                CARDANO_CLI_URL=\"https://github.com/IntersectMBO/cardano-node/releases/download/\${CARDANO_CLI_VERSION}/cardano-node-\${CARDANO_CLI_VERSION}-macos.tar.gz\"
+            elif [ \"\$OS\" = \"linux\" ]; then
+                CARDANO_CLI_URL=\"https://github.com/IntersectMBO/cardano-node/releases/download/\${CARDANO_CLI_VERSION}/cardano-node-\${CARDANO_CLI_VERSION}-linux.tar.gz\"
+            else
+                echo \"Unsupported OS: \$OS\"
+                exit 1
+            fi
+
+            curl -L -o /tmp/cardano-cli.tar.gz \"\$CARDANO_CLI_URL\"
+            tar -xzf /tmp/cardano-cli.tar.gz -C lib/ bin/cardano-cli --strip-components=1 2>/dev/null || tar -xzf /tmp/cardano-cli.tar.gz -C lib/ cardano-cli
+            chmod +x lib/cardano-cli
+            rm /tmp/cardano-cli.tar.gz
+            echo '✓ cardano-cli downloaded'
+        fi
     else
-        echo 'Cardano tools found'
+        echo '✓ Cardano tools already installed'
     fi
 "
 

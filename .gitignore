@@ -40,18 +40,19 @@ id_*
 .DS_Store
 Thumbs.db
 
-# Cardano tools (large binaries - downloaded during setup)
+# Cardano tools (large binaries - auto-downloaded during setup)
+lib/cardano-address
+lib/cardano-cli
 tools/cardano-address*
 tools/cardano-cli*
 tools/*.tar.gz
-cardano-address
-cardano-cli
+/cardano-address
+/cardano-cli
 
-# Ashmaize binaries (large Rust libraries - copied from midnight-miner)
-lib/macos-*/
-lib/linux-*/
-lib/windows-*/
-ashmaize_loader.py
+# Ashmaize binaries are COMMITTED to repo (small, ~400KB each)
+# lib/macos-arm64/ashmaize_py.so
+# lib/linux-x64/ashmaize_py.so
+# ashmaize_loader.py
 
 # Editor files
 .vscode/
