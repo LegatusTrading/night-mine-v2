@@ -1,0 +1,19 @@
+# Remote Mining Configuration - Server 1
+
+# Number of mining workers
+WORKERS=8
+
+# Number of wallets to create
+WALLETS=8
+
+# Network (mainnet or testnet)
+NETWORK=mainnet
+
+# Local data directory for backups (ALWAYS local path on your machine)
+DATA_DIR=/Users/psuzzi/projects/mn/night-mine-v2/data
+
+# SSH connection to remote server
+SSH_HOST=root@51.159.135.76
+
+# Remote directory where miner will run
+REMOTE_DIR=/root/miner

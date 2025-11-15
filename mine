@@ -1,0 +1,75 @@
+#!/bin/bash
+# Midnight Miner - Universal wrapper
+# Simple interface for local and remote mining operations
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# Load common functions
+source lib/common.sh
+
+# Parse command
+COMMAND="$1"
+
+if [ -z "$COMMAND" ]; then
+    show_help
+    exit 0
+fi
+
+# Extract operation and host
+if [[ "$COMMAND" =~ ^([a-z]+)-([a-z0-9]+)$ ]]; then
+    # Remote: setup-s1, start-s2, etc
+    OPERATION="${BASH_REMATCH[1]}"
+    HOST="${BASH_REMATCH[2]}"
+elif [[ "$COMMAND" =~ ^([a-z]+)-all$ ]]; then
+    # All servers: status-all, backup-all, stop-all
+    OPERATION="${BASH_REMATCH[1]}"
+    HOST="all"
+else
+    # Local: setup, start, stop, etc
+    OPERATION="$COMMAND"
+    HOST="local"
+fi
+
+# Validate operation
+case "$OPERATION" in
+    setup|start|stop|watch|status|backup)
+        ;;
+    help)
+        show_help
+        exit 0
+        ;;
+    *)
+        echo "Error: Unknown command '$COMMAND'"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac
+
+# Load configuration for the host
+load_config "$HOST"
+
+# Execute operation
+case "$OPERATION" in
+    setup)
+        lib/setup.sh "$HOST"
+        ;;
+    start)
+        lib/start.sh "$HOST"
+        ;;
+    stop)
+        lib/stop.sh "$HOST"
+        ;;
+    watch)
+        lib/watch.sh "$HOST"
+        ;;
+    status)
+        lib/status.sh "$HOST"
+        ;;
+    backup)
+        lib/backup.sh "$HOST"
+        ;;
+esac

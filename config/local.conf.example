@@ -1,0 +1,18 @@
+# Local Mining Configuration
+
+# Number of mining workers (typically matches CPU cores)
+WORKERS=8
+
+# Number of wallets to create (recommendation: same as workers or 2x workers)
+WALLETS=8
+
+# Network (mainnet or testnet)
+NETWORK=mainnet
+
+# Local data directory for backups (always local path, even for remote mining)
+DATA_DIR=/Users/psuzzi/projects/mn/night-mine-v2/data
+
+# For local mining, SSH_HOST and REMOTE_DIR are not needed
+# (Leave commented or empty)
+# SSH_HOST=
+# REMOTE_DIR=

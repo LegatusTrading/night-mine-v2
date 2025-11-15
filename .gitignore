@@ -1,0 +1,59 @@
+# Sensitive configuration files
+config/*.conf
+!config/*.conf.example
+
+# Data directories (wallets, challenges, balances, backups)
+data/
+
+# Python virtual environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Mining runtime files
+wallets.json
+wallets-*.json
+balances.json
+challenges.json
+*.log
+.miner.pid
+developer_addresses.json
+solutions.csv
+
+# HD Wallet files (CRITICAL - Contains private keys!)
+hd-wallets/
+hd-wallets.backup-*/
+wallet-output/
+*.prv
+*.skey
+mnemonic*.txt
+
+# SSH keys and credentials
+*.key
+*.pem
+id_*
+!*.pub
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Cardano tools (large binaries - downloaded during setup)
+tools/cardano-address*
+tools/cardano-cli*
+tools/*.tar.gz
+cardano-address
+cardano-cli
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# AI workspace (keep documentation, exclude temporary files)
+.ai/tmp/
+.ai/*/scratch/
